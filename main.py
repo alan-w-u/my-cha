@@ -1,4 +1,5 @@
-from guizero import App, Box, PushButton
+from guizero import App, Box, PushButton, Picture
+import gpio_controller
 
 BACKGROUND_COLOR = "#c0cfb2"
 TEXT_COLOR = "#333333"
@@ -36,9 +37,12 @@ def select_size(selected_size):
   selected_size.bg = SELECTED_COLOR
 
 def start():
-  intensity_level = intensity.text
-  size_level = size.text
-  print(intensity_level, size_level)
+  left.hide()
+  right.hide()
+  making.show()
+  gpio_controller.make_matcha(intensity.text, size.text)
+
+gpio_controller.setup()
 
 app = App("My-Cha", layout="grid", height=500, width=500, bg=BACKGROUND_COLOR)
 
@@ -49,6 +53,7 @@ app.tk.columnconfigure(2, weight=1)
 left = Box(app, grid=[0,0], layout="auto")
 middle = Box(app, grid=[1,0], layout="auto")
 right = Box(app, grid=[2,0], layout="auto")
+making = Box(app, grid=[0,0,3,1], layout="auto", visible=False)
 
 start_button = PushButton(middle, command=start, image="assets/matcha.png", width=300, height=300)
 start_button.tk.config(borderwidth=0, highlightthickness=0)
@@ -61,6 +66,8 @@ intensity_3_button = create_button(left, command=lambda: select_intensity(intens
 size_1_button = create_button(right, command=lambda: select_size(size_1_button), text="Small")
 size_2_button = create_button(right, command=lambda: select_size(size_2_button), text="Medium")
 size_3_button = create_button(right, command=lambda: select_size(size_3_button), text="Large")
+
+making_matcha_image = Picture(making, image="assets/making_matcha.png")
 
 select_intensity(intensity_2_button)
 select_size(size_2_button)
